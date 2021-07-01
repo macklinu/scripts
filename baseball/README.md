@@ -12,3 +12,7 @@ Still in development. Try running the following commands from the root of this r
 deno run --allow-net baseball/cli.ts schedule
 deno run --allow-net baseball/cli.ts schedule --help
 ```
+
+Example screenshot
+
+![](./screenshot.png)
