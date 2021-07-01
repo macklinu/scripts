@@ -15,4 +15,4 @@ deno run --allow-net baseball/cli.ts schedule --help
 
 Example screenshot
 
-![](./screenshot.png)
+<img src="./screenshot.png" width="720" />
