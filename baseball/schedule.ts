@@ -1,9 +1,6 @@
-import { z } from "https://cdn.skypack.dev/zod?dts";
-import { dim, yellow } from "https://deno.land/std@0.99.0/fmt/colors.ts";
-import dayjs from "https://cdn.skypack.dev/dayjs@1.10.5?dts";
-import { Command } from "https://deno.land/x/cliffy@v0.19.2/command/mod.ts";
-import { Cell, Table } from "https://deno.land/x/cliffy@v0.19.2/table/mod.ts";
+import { Cell, Command, dayjs, dim, Table, yellow, z } from "../deps.ts";
 import * as StatsApi from "./StatsApi.ts";
+import { startsWith } from "./utils.ts";
 
 class DateArgParser {
   private static DATE_FORMAT = "YYYY-MM-DD";
@@ -71,6 +68,9 @@ class Game {
   }
 
   get time() {
+    if (this.status.isPostponed) {
+      return this.status.detailedState;
+    }
     if (this.status.startTimeTBD) {
       return "TBD";
     }
@@ -121,13 +121,18 @@ class Game {
   }
 
   get inning() {
+    if (this.status.isPostponed) {
+      return "";
+    }
     if (this.status.isFinal) {
       return this.linescore.currentInning !== 9
         ? `Final/${this.linescore.currentInning}`
         : "Final";
     }
     if (this.status.isLive) {
-      return `${this.game.linescore.inningHalf} ${this.game.linescore.currentInning}`;
+      return `${this.game.linescore!.inningHalf} ${
+        this.game.linescore!.currentInning
+      }`;
     }
     return "";
   }
@@ -137,19 +142,19 @@ class Linescore {
   constructor(private game: StatsApi.Game) {}
 
   get currentInning() {
-    return this.game.linescore.currentInning;
+    return this.game.linescore?.currentInning;
   }
 
   get scheduledInnings() {
-    return this.game.linescore.scheduledInnings ?? 9;
+    return this.game.linescore?.scheduledInnings ?? 9;
   }
 
   get awayTeamRuns() {
-    return this.game.linescore.teams?.away?.runs ?? 0;
+    return this.game.linescore?.teams?.away?.runs ?? 0;
   }
 
   get homeTeamRuns() {
-    return this.game.linescore.teams?.home?.runs ?? 0;
+    return this.game.linescore?.teams?.home?.runs ?? 0;
   }
 
   get isAwayTeamWinning() {
@@ -180,8 +185,16 @@ class GameStatus {
     return this.code === "F";
   }
 
+  get isPostponed() {
+    return startsWith(this.game.status.statusCode, ["D", "C"]);
+  }
+
+  get detailedState() {
+    return this.game.status.detailedState;
+  }
+
   get hasStarted() {
-    return this.isLive || this.isFinal;
+    return this.isLive || (this.isFinal && !this.isPostponed);
   }
 }
 

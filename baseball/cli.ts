@@ -1,4 +1,4 @@
-import { Command } from "https://deno.land/x/cliffy@v0.19.2/command/mod.ts";
+import { Command } from "../deps.ts";
 import { schedule } from "./schedule.ts";
 
 await new Command()

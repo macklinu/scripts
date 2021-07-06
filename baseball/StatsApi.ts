@@ -1,4 +1,4 @@
-import { z } from "https://cdn.skypack.dev/zod?dts";
+import { z } from "../deps.ts";
 
 export const Team = z.object({
   leagueRecord: z.object({
@@ -31,10 +31,12 @@ export const Game = z.object({
   gameDate: z.string(),
   rescheduleDate: z.string().optional(),
   status: z.object({
+    detailedState: z.string(),
+    statusCode: z.string(),
     abstractGameCode: z.enum(["F", "L", "O", "P"]),
     startTimeTBD: z.boolean(),
   }).passthrough(),
-  linescore: Linescore,
+  linescore: Linescore.optional(),
   teams: z.object({
     away: Team,
     home: Team,
