@@ -12,12 +12,16 @@ const Args = z.object({
 class ScheduleFormatter {
   private games: Game[];
 
-  constructor(games: StatsApi.Game[]) {
+  constructor(games: StatsApi.Game[], private date: string) {
     this.games = games.map((game) => new Game(game));
   }
 
   display() {
-    new Table(...this.games.map(this.toTableRow)).render();
+    if (this.games.length === 0) {
+      console.log(`No games on ${this.date}`);
+    } else {
+      new Table(...this.games.map(this.toTableRow)).render();
+    }
   }
 
   private toTableRow(game: Game) {
@@ -201,5 +205,5 @@ export const schedule = new Command()
     const { date } = Args.parse(args);
     const response = await StatsApi.getSchedule({ date });
     const games = response.dates.flatMap((date) => date.games);
-    new ScheduleFormatter(games).display();
+    new ScheduleFormatter(games, date).display();
   });
