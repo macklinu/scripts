@@ -1,7 +1,7 @@
 import { DateTime } from "../deps.ts";
 
 export class DateArgParser {
-  static isValid(date: string | undefined): boolean {
+  static isValid(date: string): boolean {
     switch (date) {
       case "yesterday":
       case "tomorrow":
@@ -14,7 +14,7 @@ export class DateArgParser {
     }
   }
 
-  static formatDate(date: string | undefined) {
+  static formatDate(date: string) {
     switch (date) {
       case "yesterday":
         return DateTime.now().minus({ day: 1 }).toISODate();
@@ -23,7 +23,7 @@ export class DateArgParser {
       case "today":
         return DateTime.now().toISODate();
       default:
-        return DateTime.fromISO(date!).toISODate();
+        return DateTime.fromISO(date).toISODate();
     }
   }
 }

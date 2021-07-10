@@ -12,13 +12,6 @@ test({
 });
 
 test({
-  name: "undefined date string is invalid",
-  fn: () => {
-    assertEquals(DateArgParser.isValid(undefined), false);
-  },
-});
-
-test({
   name: "empty date string is invalid",
   fn: () => {
     assertEquals(DateArgParser.isValid(""), false);
