@@ -1,38 +1,7 @@
-import { Cell, Command, dayjs, dim, Table, yellow, z } from "../deps.ts";
+import { Cell, Command, DateTime, dim, Table, yellow, z } from "../deps.ts";
 import * as StatsApi from "./StatsApi.ts";
 import { startsWith } from "./utils.ts";
-
-class DateArgParser {
-  private static DATE_FORMAT = "YYYY-MM-DD";
-
-  static isValid(date: string | undefined): boolean {
-    switch (date) {
-      case "yesterday":
-      case "tomorrow":
-      case "today":
-        return true;
-      default: {
-        return dayjs(date, DateArgParser.DATE_FORMAT, "en", true).isValid();
-      }
-    }
-  }
-
-  static formatDate(date: string | undefined) {
-    switch (date) {
-      case "yesterday":
-        return dayjs().subtract(1, "day").format(DateArgParser.DATE_FORMAT);
-      case "tomorrow":
-        return dayjs().add(1, "day").format(DateArgParser.DATE_FORMAT);
-      case "today":
-        return dayjs().format(DateArgParser.DATE_FORMAT);
-      default: {
-        return dayjs(date, DateArgParser.DATE_FORMAT, "en", true).format(
-          DateArgParser.DATE_FORMAT,
-        );
-      }
-    }
-  }
-}
+import { DateArgParser } from "./DateArgParser.ts";
 
 const Args = z.object({
   date: z.string()
@@ -74,7 +43,7 @@ class Game {
     if (this.status.startTimeTBD) {
       return "TBD";
     }
-    return dayjs(this.date).format("h:mm a");
+    return DateTime.fromISO(this.date).toFormat("h:mm a");
   }
 
   get homeTeam() {
